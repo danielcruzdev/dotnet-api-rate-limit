@@ -1,0 +1,37 @@
+name: Rate Limit Test (k6)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  rate-limit-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restaurar dependências
+        run: dotnet restore
+
+      - name: Build da API
+        run: dotnet build --no-restore
+
+      - name: Subir API em background
+        run: |
+          dotnet run --project src/Api &
+          sleep 10
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Executar teste de Rate Limit
+        run: k6 run tests/k6/rate-limit-test.js
