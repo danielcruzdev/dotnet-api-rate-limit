@@ -29,8 +29,18 @@ jobs:
 
     - name: Subir API em background
       run: |
-        dotnet run --project src/Api &
-        sleep 10
+        cd src/Api
+        dotnet run --no-build > api.log 2>&1 &
+        echo "Aguardando API iniciar..."
+        for i in {1..30}; do
+          if curl -s http://localhost:5189/with-rate-limit/weather-forecast > /dev/null 2>&1; then
+            echo "API está pronta!"
+            break
+          fi
+          echo "Tentativa $i de 30..."
+          sleep 1
+        done
+        sleep 2
 
     - name: Setup k6
       uses: grafana/setup-k6-action@v1
