@@ -21,9 +21,11 @@ jobs:
 
       - name: Restaurar dependências
         run: dotnet restore
+        working-directory: src
 
       - name: Build da API
         run: dotnet build --no-restore
+        working-directory: src
 
       - name: Subir API em background
         run: |
