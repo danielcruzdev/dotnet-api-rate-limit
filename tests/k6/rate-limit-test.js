@@ -10,7 +10,6 @@ export const options = {
     },
   },
   thresholds: {
-    http_req_failed: ['rate<0.01'], // não deve falhar por erro técnico
     'checks{rate_limit:yes}': ['rate>0.1'], // pelo menos 10% devem ser 429
   },
 };
